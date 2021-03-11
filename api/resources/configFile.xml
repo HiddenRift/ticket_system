@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="config_schema.xsd">
+    <email_settings>
+        <email_address></email_address>
+        <smtp_server></smtp_server>
+        <port></port>
+        <authentication></authentication>
+        <encryption></encryption>
+        <username></username>
+        <password></password>
+    </email_settings>
+
+    <default_email_prefs>
+        <receive_login_alert>true</receive_login_alert>
+        <receive_ticket_resolved_alert>true</receive_ticket_resolved_alert>
+        <receive_ticket_response_alert>true</receive_ticket_response_alert>
+    </default_email_prefs>
+
+    <!-- dont include following to use defaults -->
+    <mongo_server_connection>
+        <address>localhost</address>
+        <username>username</username>
+        <password></password>
+        <port>6111</port>
+    </mongo_server_connection>
+</settings>

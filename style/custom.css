@@ -1,0 +1,8 @@
+.hide{
+    display:none;
+}
+
+.vertically_center {
+    min-height: 42em;
+    -webkit-box-align: center;
+}

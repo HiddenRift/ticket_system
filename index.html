@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- link to bulma,free open souce CSS stylesheet based on flexbox (contains attribution) -->
+    <link rel="stylesheet" href="style/bulma.css">
+    <link rel="stylesheet" href="style/custom.css">
+    <!-- link fo fontawesone,free open souce collection of resources -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <script src="js/APIVars.js" type="module" ></script>
+    <script src="js/indexFunctions.js"></script>
+    <title>Support Ticket Manager</title>
+</head>
+<body>
+<!-- page shown to log in to the system -->
+<div id="loginPage">
+    <div id="loginForm">
+        <section class="hero is-primary">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">Support Ticket Manager</h1>
+                </div>
+            </div>
+        </section>
+        <div class="columns">
+            <div class="column">
+                <!-- hidden col for centering -->
+            </div>
+            <div class="column verticallyCenter" id="loginFormDiv">
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="email" placeholder="Email" id="loginEmail">
+                        <!-- add icon to left of text box -->
+                        <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
+                    </div>
+                    <p class="help is-danger" id="emailWarning"></p>
+                </div>
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="password" placeholder="Password" id="loginPassword">
+                        <!-- add icon to left of text box -->
+                        <span class="icon is-small is-left">
+                <i class="fas fa-key"></i>
+              </span>
+                    </div>
+                    <p class="help is-danger" id="passwordWarning"></p>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button class="button" type="button" onclick="login()" id="loginButton">Login</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="column">
+                <!-- hidden col for centering -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Page shown to normal users -->
+<div id="userHomePage" class="hide">
+    <!-- https://bulma.io/documentation/components/navbar/ fo nav bar docs -->
+    <section class="hero is-primary">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">Support Ticket Manager</h1>
+            </div>
+        </div>
+    </section>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a id="userNavHome" class="navbar-item" href="#userNavHome" >
+                    Home
+                </a>
+                <a id="userNavNewTicket" class="navbar-item" href="#createTicket" onclick="showNewTicket()">
+                    New Ticket
+                </a>
+                <a id="userNavViewTicket" class="navbar-item" href="#viewMyTickets" onclick="showMyTickets()">
+                    View my tickets
+                </a>
+                <a id="userNavPreferences" class="navbar-item" href="#preferences">
+                    Preferences
+                </a>
+                <div id="userNavManageTicketsMenu" class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        Manage Tickets
+                    </a>
+                    <div class="navbar-dropdown">
+                        <a id="userNavViewUnattendedTickets" class="navbar-item">
+                            View Unattended Tickets
+                        </a>
+                        <a id="userNavViewTicketsAttending" class="navbar-item">
+                            View my tickets
+                        </a>
+                    </div>
+                </div>
+
+                <div id="userNavManageUsersMenu" class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        Manage Users
+                    </a>
+
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item" onclick="showAddUser()" href="#addUser">
+                            Add User
+                        </a>
+                        <a class="navbar-item" onclick="showUserList()" href="#viewUsers">
+                            View Users
+                        </a>
+                        <a class="navbar-item" onclick="showEditUser()" href="#editUser">
+                            Edit User
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <button id="userNavSystemSettings" class="button">System</button>
+                </div>
+                <div class="navbar-item">
+                    <button id="userNavLogout" class="button" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- create ticket form -->
+    <div id="createTicket" class="hide">
+        <h1 class="title">Create Ticket</h1>
+        <div id="createTicketForm" class="columns is-centered">
+            <div class="column is-four-fifths">
+                <div class="field">
+                    <div class="control">
+                        <label class="label">Issue</label>
+                        <textarea id="newTicketBody" class="textarea" placeholder="State your issue here..." rows="15"></textarea>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button class="button" type="button" onclick="createNewTicket()" id="createNewTicketButton">Create New Ticket</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Tickets page -->
+    <div id="viewMyTickets" class="hide">
+        <h1 class="title">My tickets</h1>
+        <div id="myTicketsPanel" class="columns">
+            <!-- column shows list of tickets the user has created -->
+            <div class="hide" id="currentTicketShownID"></div>
+            <div class="column" id="ticketsPanel">
+                <div class="card" id="ticketidstring">
+                    <div class="card-content">
+                        <div class="content">
+                            Brief summary of the ticket content
+                            <br/>
+                            <br/>
+                            Time submitted:
+                            <time> 11:09 PM - 1 Jan 2016</time>
+                            <br/>
+                            status: In Progress
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="card" id="ticketidstring54">
+                    <div class="card-content">
+                        <div class="content">
+                            Brief summary of the ticket content
+                            <br/>
+                            <br/>
+                            Time submitted:
+                            <time> 11:09 PM - 1 Jan 2016</time>
+                            <br/>
+                            status: In Progress
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="card" id="ticketidstring124">
+                    <div class="card-content">
+                        <div class="content">
+                            Brief summary of the ticket content
+                            <br/>
+                            <br/>
+                            Time submitted:
+                            <time> 11:09 PM - 1 Jan 2016</time>
+                            <br/>
+                            status: In Progress
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="card" id="ticketidstring689">
+                    <div class="card-content">
+                        <div class="content">
+                            Brief summary of the ticket content
+                            <br/>
+                            <br/>
+                            Time submitted:
+                            <time> 11:09 PM - 1 Jan 2016</time>
+                            <br/>
+                            status: In Progress
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="card" id="ticketidstring531">
+                    <div class="card-content">
+                        <div class="content">
+                            Brief summary of the ticket content
+                            <br/>
+                            <br/>
+                            Time submitted:
+                            <time> 11:09 PM - 1 Jan 2016</time>
+                            <br/>
+                            status: In Progress
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="card" id="ticketidstring23546">
+                    <div class="card-content">
+                        <div class="content">
+                            Brief summary of the ticket content
+                            <br/>
+                            <br/>
+                            Time submitted:
+                            <time> 11:09 PM - 1 Jan 2016</time>
+                            <br/>
+                            status: In Progress
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="card" id="ticketidstring32">
+                    <div class="card-content">
+                        <div class="content">
+                            Brief summary of the ticket content
+                            <br/>
+                            <br/>
+                            Time submitted:
+                            <time> 11:09 PM - 1 Jan 2016</time>
+                            <br/>
+                            status: In Progress
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="card" id="ticketidstring234">
+                    <div class="card-content">
+                        <div class="content">
+                            Brief summary of the ticket content
+                            <br/>
+                            <br/>
+                            Time submitted:
+                            <time> 11:09 PM - 1 Jan 2016</time>
+                            <br/>
+                            status: In Progress
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="card" id="ticketidstring1">
+                    <div class="card-content">
+                        <div class="content">
+                            Brief summary of the ticket content
+                            <br/>
+                            <br/>
+                            Time submitted:
+                            <time> 11:09 PM - 1 Jan 2016</time>
+                            <br/>
+                            status: In Progress
+                        </div>
+                    </div>
+                </div>
+                <br/>
+            </div>
+            <!-- column shows a ticket that has been clicked on -->
+            <div class="column" id="ticketViewer">
+                <div class="ticketResponses">
+                    <article class="media">
+                        <div class="media-content">
+                            <div class="content">
+                                <p>
+                                    <strong id="ticketViewName">Your name here</strong> <small id="ticketViewEmail">your email here</small>
+                                    <br/>
+                                    <div id="ticketViewTicket">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                                    <br/>
+                                    <time id="ticketViewTime"></time>
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <br/>
+                <div id="appendResponse">
+                    <div id="myTicketReplies">
+                        <article class="media">
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <strong>responsename</strong> <small>their email here</small>
+                                        <br/>
+                                        <div>response</div>
+                                        <br/>
+                                        <time> time here</time>
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <article class="media">
+                        <div class="media-content">
+
+                            <div class="field">
+                                <div class="control">
+                                    <label class="label">Reply to Ticket</label>
+                                    <textarea id="ownTicketReply" class="textarea" placeholder="Response..."></textarea>
+                                </div>
+                            </div>
+
+                            <nav class="level">
+                                <div class="level-left">
+                                    <div class="level-item">
+                                        <div class="control">
+                                            <button class="button" type="button" onclick="add_response()" id="appendResponseButton">Respond</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="preferences" class="hide">
+        <h1 class="title">Preferences</h1>
+    </div>
+
+    <div id="systemSettings" class="hide">
+        <h1 class="title">System Settings</h1>
+    </div>
+
+    <!-- add new user form -->
+    <div id="addUser" class="hide">
+        <h1 class="title">Add new user</h1>
+        <div id="AddUserForm" class="columns is-centered">
+            <div class="column is-three-fifths">
+                <!-- fields go here -->
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="email" placeholder="Email" id="newEmail">
+                        <!-- add icon to left of text box -->
+                        <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
+                    </div>
+                    <p class="help is-danger" id="addUserEmailWarning"></p>
+                </div>
+                <div class="field">
+                    <label class="label">Name</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="text" placeholder="Name" id="newName">
+                        <!-- add icon to left of text box -->
+                        <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+              </span>
+                        <p class="help is-danger" id="addUserNameWarning"></p>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="password" placeholder="Password" id="newPassword">
+                        <!-- add icon to left of text box -->
+                        <span class="icon is-small is-left">
+                <i class="fas fa-key"></i>
+              </span>
+                    </div>
+                    <p class="help is-danger" class="newPasswordWarning"></p>
+                </div>
+                <div class="field">
+                    <label class="label">User Type</label>
+                    <div class="control">
+                        <div class="select">
+                            <select id="newUserType">
+                                <option value="normal">Normal user</option>
+                                <option value="staff">Staff user</option>
+                                <option value="admin">Admin User</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- submit button -->
+                <div class="field">
+                    <div class="control">
+                        <button class="button" type="button" onclick="addUser()" id="addNewUser">Add User</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- view users in the system -->
+    <div id="viewUsers" class="hide">
+        <h1 class="title">View users</h1>
+        <div class="columns is-centered" id="viewUsersTable">
+            <div class="column is-four-fifths">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <td>User Email</td>
+                        <td>User Name</td>
+                        <td>Account Status</td>
+                        <td>Permissions</td>
+                        <td>Actions</td>
+                    </tr>
+                    </thead>
+                    <tbody id="userTableRows">
+                    <tr>
+                        <td>agf@asu.com</td>
+                        <td>robert fry admin</td>
+                        <td>active</td>
+                        <td>administrator</td>
+                        <td>
+                            <button class="button" type="button" onclick="" id="uID_jhdsaflwhgfiuw98">remove user</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="editUser" class="hide">
+        <h1 class="title">editUser</h1>
+        <div class="columns is-centered">
+            <div id="editUserForm" class="column is-three-fifths">
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="email" placeholder="Email" id="editEmail">
+                        <!-- add icon to left of text box -->
+                        <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
+                    </div>
+                    <p class="help is-danger" id="editUserEmailWarning"></p>
+                </div>
+                <div class="field">
+                    <label class="label">Name</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="text" placeholder="Name" id="editName">
+                        <!-- add icon to left of text box -->
+                        <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+              </span>
+                        <p class="help is-danger" id="editUserNameWarning"></p>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" type="password" placeholder="Password" id="editPassword">
+                        <!-- add icon to left of text box -->
+                        <span class="icon is-small is-left">
+                <i class="fas fa-key"></i>
+              </span>
+                    </div>
+                    <p class="help is-danger" id="editPasswordWarning"></p>
+                </div>
+                <div class="field">
+                    <label class="label">User Type</label>
+                    <div class="control">
+                        <div class="select">
+                            <select id="editUserType">
+                                <option value="user">Normal user</option>
+                                <option value="staff">Staff user</option>
+                                <option value="admin">Admin User</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button class="button" type="button" onclick="" id="editUserDetails">Edit User</button>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button class="button" type="button" onclick="" id="populateUserDetails">Populate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- view unattended tickets -->
+    <div id="staffViewUnattendedTickets" class="hide">
+        <h1 class="title">UnattendedTickets</h1>
+        <div class="columns">
+            <div id="unservicedTicketList" class="column">
+
+            </div>
+            <div id="currentUnservedTicket" class="column">
+
+            </div>
+        </div>
+    </div>
+
+    <!-- view tickets attending to -->
+    <div id="staffViewTicketsServicing" class="hide">
+        <h1 class="title">View Tickets servicing</h1>
+        <div class="columns">
+            <div id="ticketServicingList" class="column">
+
+            </div>
+            <div id="currentTicketServicing" class="column">
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1 @@
+C:37:"PHPUnit\Runner\DefaultTestResultCache":235:{a:2:{s:7:"defects";a:1:{s:56:"SupportTicketManager\PhpComparerTest::testCompareStrings";i:5;}s:5:"times";a:2:{s:56:"SupportTicketManager\PhpComparerTest::testCompareStrings";d:0.001;s:35:"PhpComparerTest::testCompareStrings";d:0.002;}}}

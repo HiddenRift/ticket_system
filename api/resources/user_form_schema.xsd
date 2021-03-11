@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="users">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="user"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="user">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="name"/>
+                <xs:element ref="email"/>
+                <xs:element ref="password"/>
+                <xs:element ref="permissions"/>
+                <xs:element ref="isActive"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="name" type="name"/>
+    <xs:element name="email" type="email"/>
+    <xs:element name="password" type="password"/>
+    <xs:element name="permissions" type="permission"/>
+    <xs:element name="isActive" type="xs:boolean"/>
+
+    <xs:simpleType name="email">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="([^@]+)@[^@.]+.[^@]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="permission">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="normaluser"></xs:enumeration>
+            <xs:enumeration value="staffuser"></xs:enumeration>
+            <xs:enumeration value="adminuser"></xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="password">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"></xs:minLength>
+            <xs:maxLength value="64"></xs:maxLength>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="name">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"></xs:minLength>
+            <xs:maxLength value="32"></xs:maxLength>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

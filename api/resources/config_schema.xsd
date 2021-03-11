@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="settings">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- each element must occur at least once, except the server which is optional -->
+                <xs:element maxOccurs="1" minOccurs="1" ref="email_settings"/>
+                <xs:element  maxOccurs="1" minOccurs="1" ref="default_email_prefs"/>
+                <xs:element  maxOccurs="1" minOccurs="0" ref="mongo_server_connection"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="email_settings">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="email_address"/>
+                <xs:element ref="smtp_server"/>
+                <xs:element ref="port"/>
+                <xs:element ref="authentication"/>
+                <xs:element ref="encryption"/>
+                <xs:element ref="username"/>
+                <xs:element ref="password"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="email_address" type="xs:string"/>
+    <xs:element name="smtp_server" type="xs:string"/>
+    <xs:element name="authentication" type="xs:boolean"/>
+    <xs:element name="encryption" type="encryption"/>
+    <xs:simpleType name="encryption">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ssl"></xs:enumeration>
+            <xs:enumeration value="tls"></xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="default_email_prefs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="receive_login_alert"/>
+                <xs:element ref="receive_ticket_resolved_alert"/>
+                <xs:element ref="receive_ticket_response_alert"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="receive_login_alert" type="xs:boolean"/>
+    <xs:element name="receive_ticket_resolved_alert" type="xs:boolean"/>
+    <xs:element name="receive_ticket_response_alert" type="xs:boolean"/>
+    <xs:element name="mongo_server_connection">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="address"/>
+                <xs:element ref="username"/>
+                <xs:element ref="password"/>
+                <xs:element ref="port"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="address" type="xs:NCName"/>
+    <xs:element name="port" type="xs:integer"/>
+    <xs:element name="username" type="xs:NCName"/>
+    <xs:element name="password" type="xs:NCName"/>
+</xs:schema>
